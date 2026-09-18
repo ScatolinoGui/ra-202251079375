@@ -1,7 +1,7 @@
 # Proposta de Projeto — Programação Web 2026.2
 
 - **Aluno:** Guilherme Scatolino · **Curso/Turma:** Engenharia de Computação
-- **Repositório:** https://github.com/ScatolinoGui/Acervo-Historico-Celeste
+- **Repositório:** https://github.com/ScatolinoGui/Acervo-Historico-Celeste-RA-202251079375
 
 ## 1. Tema e problema
 O projeto é um acervo histórico dos ídolos do Cruzeiro Esporte Clube. Ele resolve a dificuldade de encontrar estatísticas consolidadas e dados estruturados dos jogadores mais antigos, centralizando essas informações que normalmente ficam espalhadas na internet.
