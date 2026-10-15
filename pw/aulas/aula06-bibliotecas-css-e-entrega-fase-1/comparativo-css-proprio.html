@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparativo 1 de 3 — CSS próprio</title>
+  <!--
+    ============================================================
+    COMPARATIVO 1/3 — CSS PROPRIO — Aula 9
+    ============================================================
+    O MESMO componente (navbar + 3 cards + botao) foi construido de tres formas:
+      comparativo-css-proprio.html   <- este arquivo
+      comparativo-bootstrap.html
+      comparativo-tailwind.html
+
+    Estao em ARQUIVOS SEPARADOS de proposito: o reset do Bootstrap afeta a pagina
+    inteira e contaminaria a comparacao se tudo estivesse junto.
+
+    O QUE COMPARAR (Rodadas 1 a 3 do handout):
+      - linhas de CSS escritas a mao
+      - onde a decisao visual mora: no CSS ou no HTML?
+      - o que acontece quando o cliente pede "muda a cor primaria"
+      - o que voce leva no bagagem quando troca de projeto
+
+    ESTE ARQUIVO: 100% do CSS foi escrito por voce. E exatamente a tecnica das
+    aulas 4 a 8 — inclusive as variaveis da aula 5 e o Grid da aula 7.
+    Contagem aproximada: ~75 linhas de CSS proprio, 0 dependencia externa.
+  -->
+  <style>
+    /* ---------- tokens (aula 5) ---------- */
+    :root {
+      --cor-primaria: hsl(207, 60%, 45%);
+      --cor-texto:    hsl(215, 25%, 27%);
+      --cor-suave:    hsl(215, 16%, 47%);
+      --cor-fundo:    hsl(210, 20%, 98%);
+      --cor-borda:    hsl(214, 20%, 90%);
+      --raio:         6px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--cor-fundo); color: var(--cor-texto);
+      font-family: system-ui, Segoe UI, Arial, sans-serif; line-height: 1.5;
+    }
+
+    /* ---------- navbar (aula 6: flex) ---------- */
+    .navbar {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--cor-primaria); color: #fff; padding: 0.875rem 1.25rem;
+    }
+    .navbar .marca { font-weight: 700; font-size: 1.125rem; }
+    .navbar ul { display: flex; gap: 1.25rem; list-style: none; margin: 0; padding: 0; }
+    .navbar a { color: #fff; text-decoration: none; font-size: 0.9375rem; }
+    .navbar a:hover,
+    .navbar a:focus-visible { text-decoration: underline; }
+
+    /* ---------- container fluido (aula 8) ---------- */
+    .container { max-width: 60rem; width: 100%; margin: 0 auto; padding: 1.5rem 1.25rem; }
+    h1 { font-size: 1.75rem; margin: 0 0 0.25rem; }
+    .subtitulo { color: var(--cor-suave); margin: 0 0 1.5rem; }
+
+    /* ---------- galeria (aula 7: grid auto-fit) ---------- */
+    .galeria {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: #fff; border: 1px solid var(--cor-borda);
+      border-radius: var(--raio); padding: 1rem 1.125rem;
+    }
+    .card h2 { font-size: 1.125rem; margin: 0 0 0.25rem; }
+    .card p  { color: var(--cor-suave); font-size: 0.9375rem; margin: 0 0 0.875rem; }
+    .selo {
+      display: inline-block; background: hsl(207, 60%, 95%); color: var(--cor-primaria);
+      border-radius: 999px; padding: 0.125rem 0.625rem;
+      font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem;
+    }
+
+    /* ---------- botao (aula 4: estados) ---------- */
+    .botao {
+      display: inline-block; background: var(--cor-primaria); color: #fff;
+      border: 0; border-radius: var(--raio); padding: 0.5rem 1rem;
+      font-family: inherit; font-size: 0.9375rem; cursor: pointer;
+    }
+    .botao:hover { background: hsl(207, 60%, 38%); }
+    .botao:focus-visible { outline: 3px solid hsl(207, 60%, 70%); outline-offset: 2px; }
+
+    .nota {
+      margin-top: 2rem; padding: 0.875rem 1rem; background: #fff;
+      border-left: 4px solid var(--cor-primaria); border-radius: var(--raio);
+      font-size: 0.875rem; color: var(--cor-suave);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <span class="marca">Adote um Pet</span>
+    <ul>
+      <li><a href="#">Disponíveis</a></li>
+      <li><a href="#">Como adotar</a></li>
+      <li><a href="#">Contato</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <h1>Pets disponíveis</h1>
+    <p class="subtitulo">Três cards, uma navbar e um botão — o mesmo componente nos três arquivos.</p>
+
+    <div class="galeria">
+      <article class="card">
+        <span class="selo">Vacinada</span>
+        <h2>Luna</h2>
+        <p>Cadela, 3 anos, porte médio. Calma e sociável.</p>
+        <button class="botao" type="button">Quero adotar</button>
+      </article>
+      <article class="card">
+        <span class="selo">Castrado</span>
+        <h2>Thor</h2>
+        <p>Cão, 1 ano, porte grande. Enérgico, precisa de espaço.</p>
+        <button class="botao" type="button">Quero adotar</button>
+      </article>
+      <article class="card">
+        <span class="selo">Vacinada</span>
+        <h2>Mel</h2>
+        <p>Gata, 2 anos, porte pequeno. Dócil e independente.</p>
+        <button class="botao" type="button">Quero adotar</button>
+      </article>
+    </div>
+
+    <p class="nota">
+      <strong>Arquivo 1 de 3 — CSS próprio.</strong>
+      Cerca de 75 linhas de CSS escritas à mão, nenhuma dependência externa.
+      Toda decisão visual mora no CSS; o HTML só descreve o conteúdo.
+      Compare com <code>comparativo-bootstrap.html</code> e <code>comparativo-tailwind.html</code>.
+    </p>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparativo 3 de 3 — Tailwind CSS</title>
+
+  <!--
+    ============================================================
+    COMPARATIVO 3/3 — TAILWIND CSS — Aula 9
+    ============================================================
+    O MESMO componente dos outros dois arquivos, agora com Tailwind.
+
+    ⚠️ REQUER INTERNET: usa o Play CDN, que compila as classes no navegador.
+       Em producao NAO se usa assim — o jeito correto e instalar o Tailwind
+       via npm, e ele gera um CSS enxuto contendo apenas as classes usadas.
+       Aqui o CDN existe so para a comparacao ser possivel sem instalar nada.
+       Plano B sem internet: comparar apenas com o codigo, projetado.
+
+    O QUE OBSERVAR:
+      - CSS proprio escrito: 0 linhas
+      - o HTML ficou o mais longo dos tres, de longe
+      - MAS: nao ha vocabulario de componente para decorar. As classes descrevem
+        propriedades CSS diretamente (flex, gap-5, rounded-md, px-4, text-sm),
+        e voce ja conhece todas elas das aulas 4 a 8.
+      - o site NAO tem uma "cara" propria: nao existe visual padrao de Tailwind
+      - mudar a cor primaria = trocar uma palavra nas classes (ou um token na config)
+
+    A comparacao honesta:
+      Bootstrap  = componentes prontos, vocabulario novo, visual reconhecivel
+      Tailwind   = utilitarios que espelham CSS, HTML verboso, visual proprio
+      CSS proprio= controle total, mais linhas suas, nada a aprender de terceiros
+  -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans">
+
+  <nav class="flex items-center justify-between bg-sky-700 px-5 py-3.5 text-white">
+    <span class="text-lg font-bold">Adote um Pet</span>
+    <ul class="flex list-none gap-5 p-0">
+      <li><a href="#" class="text-[15px] text-white hover:underline focus-visible:underline">Disponíveis</a></li>
+      <li><a href="#" class="text-[15px] text-white hover:underline focus-visible:underline">Como adotar</a></li>
+      <li><a href="#" class="text-[15px] text-white hover:underline focus-visible:underline">Contato</a></li>
+    </ul>
+  </nav>
+
+  <div class="mx-auto w-full max-w-4xl px-5 py-6">
+    <h1 class="mb-1 text-3xl font-bold">Pets disponíveis</h1>
+    <p class="mb-6 text-slate-500">
+      Três cards, uma navbar e um botão — o mesmo componente nos três arquivos.
+    </p>
+
+    <div class="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(14rem,1fr))]">
+
+      <article class="rounded-md border border-slate-200 bg-white p-4">
+        <span class="mb-2 inline-block rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-bold text-sky-700">Vacinada</span>
+        <h2 class="mb-1 text-lg font-bold">Luna</h2>
+        <p class="mb-3.5 text-[15px] text-slate-500">Cadela, 3 anos, porte médio. Calma e sociável.</p>
+        <button type="button" class="rounded-md bg-sky-700 px-4 py-2 text-[15px] text-white hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400">
+          Quero adotar
+        </button>
+      </article>
+
+      <article class="rounded-md border border-slate-200 bg-white p-4">
+        <span class="mb-2 inline-block rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-bold text-sky-700">Castrado</span>
+        <h2 class="mb-1 text-lg font-bold">Thor</h2>
+        <p class="mb-3.5 text-[15px] text-slate-500">Cão, 1 ano, porte grande. Enérgico, precisa de espaço.</p>
+        <button type="button" class="rounded-md bg-sky-700 px-4 py-2 text-[15px] text-white hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400">
+          Quero adotar
+        </button>
+      </article>
+
+      <article class="rounded-md border border-slate-200 bg-white p-4">
+        <span class="mb-2 inline-block rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-bold text-sky-700">Vacinada</span>
+        <h2 class="mb-1 text-lg font-bold">Mel</h2>
+        <p class="mb-3.5 text-[15px] text-slate-500">Gata, 2 anos, porte pequeno. Dócil e independente.</p>
+        <button type="button" class="rounded-md bg-sky-700 px-4 py-2 text-[15px] text-white hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400">
+          Quero adotar
+        </button>
+      </article>
+
+    </div>
+
+    <p class="mt-8 rounded-md border-l-4 border-sky-700 bg-white px-4 py-3.5 text-sm text-slate-500">
+      <strong class="text-slate-700">Arquivo 3 de 3 — Tailwind CSS.</strong>
+      Zero linha de CSS próprio e o HTML mais longo dos três. Em troca, não há vocabulário
+      de componente para decorar: <code>flex</code>, <code>gap-5</code>, <code>rounded-md</code>
+      e <code>px-4</code> são as propriedades CSS que você já conhece das aulas 4 a 8.
+      Se esta página está sem estilo, o CDN foi bloqueado pela rede.
+    </p>
+  </div>
+
+</body>
+</html>

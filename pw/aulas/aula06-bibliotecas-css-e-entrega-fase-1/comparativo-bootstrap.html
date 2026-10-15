@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparativo 2 de 3 — Bootstrap 5</title>
+
+  <!--
+    ============================================================
+    COMPARATIVO 2/3 — BOOTSTRAP 5 — Aula 9
+    ============================================================
+    O MESMO componente do comparativo-css-proprio.html, agora com Bootstrap 5.3.
+
+    ⚠️ REQUER INTERNET: o CSS vem de CDN. Se a rede da instituicao bloquear,
+       a pagina abre SEM ESTILO NENHUM — o que, ironicamente, ja e uma aula
+       (dependencia externa e um risco real). Plano B: baixar o bootstrap.min.css
+       antes da aula e trocar o href para o arquivo local.
+
+    O QUE OBSERVAR:
+      - CSS proprio escrito: ~0 linhas (so um ajuste opcional)
+      - as decisoes visuais migraram do CSS para as CLASSES do HTML
+      - o HTML ficou mais longo e mais dificil de ler
+      - o site herda a "cara de Bootstrap": todo mundo reconhece
+      - para mudar a cor primaria de verdade, e preciso recompilar o Sass
+        ou sobrescrever variaveis CSS do proprio Bootstrap
+
+    Classes usadas aqui (vocabulario a decorar):
+      navbar, navbar-expand-lg, navbar-dark, bg-primary, container,
+      row, col, card, card-body, card-title, card-text, btn, btn-primary,
+      badge, d-flex, gap-3, mb-4, py-2, text-secondary
+  -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous">
+
+  <style>
+    /* praticamente nada de CSS proprio — e esse e o ponto do arquivo */
+    body { background: #f8f9fa; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <span class="navbar-brand fw-bold">Adote um Pet</span>
+      <ul class="navbar-nav flex-row gap-3">
+        <li class="nav-item"><a class="nav-link" href="#">Disponíveis</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Como adotar</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Contato</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container py-4">
+    <h1 class="h3 mb-1">Pets disponíveis</h1>
+    <p class="text-secondary mb-4">
+      Três cards, uma navbar e um botão — o mesmo componente nos três arquivos.
+    </p>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+      <div class="col">
+        <article class="card h-100">
+          <div class="card-body">
+            <span class="badge text-bg-light mb-2">Vacinada</span>
+            <h2 class="card-title h5">Luna</h2>
+            <p class="card-text text-secondary">Cadela, 3 anos, porte médio. Calma e sociável.</p>
+            <button class="btn btn-primary" type="button">Quero adotar</button>
+          </div>
+        </article>
+      </div>
+      <div class="col">
+        <article class="card h-100">
+          <div class="card-body">
+            <span class="badge text-bg-light mb-2">Castrado</span>
+            <h2 class="card-title h5">Thor</h2>
+            <p class="card-text text-secondary">Cão, 1 ano, porte grande. Enérgico, precisa de espaço.</p>
+            <button class="btn btn-primary" type="button">Quero adotar</button>
+          </div>
+        </article>
+      </div>
+      <div class="col">
+        <article class="card h-100">
+          <div class="card-body">
+            <span class="badge text-bg-light mb-2">Vacinada</span>
+            <h2 class="card-title h5">Mel</h2>
+            <p class="card-text text-secondary">Gata, 2 anos, porte pequeno. Dócil e independente.</p>
+            <button class="btn btn-primary" type="button">Quero adotar</button>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="alert alert-primary mt-4 small" role="alert">
+      <strong>Arquivo 2 de 3 — Bootstrap 5.</strong>
+      Zero linha de CSS próprio. As decisões visuais foram para as classes do HTML,
+      que ficou visivelmente mais longo. Se esta página está sem estilo, o CDN foi
+      bloqueado pela rede — dependência externa é um risco real.
+    </div>
+  </div>
+
+</body>
+</html>
