@@ -1,0 +1,20 @@
+$kind: collection
+name: 'Aula 09 - API Biblioteca (Operação Crachá Nível 2)'
+description: |-
+  Testes com o resultado CORRETO segundo a matriz do README.
+  Antes das correções, os vermelhos são as falhas.
+  Rode a coleção inteira (Run collection) e reinicie a API entre execuções completas
+  (os testes 04/05 apagam o livro 3).
+variables:
+  - key: baseUrl
+    value: 'http://localhost:5291'
+  - key: tokenAna
+    value: ''
+  - key: tokenBruno
+    value: ''
+  - key: tokenCarla
+    value: ''
+  - key: tokenBeto
+    value: ''
+  - key: tokenDora
+    value: ''

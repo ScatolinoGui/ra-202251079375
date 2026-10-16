@@ -1,0 +1,13 @@
+$kind: http-request
+name: '05 - Dora (Admin) remove livro 3 → 204'
+method: DELETE
+url: '{{baseUrl}}/api/livros/3'
+order: 5000
+headers:
+  - key: Authorization
+    value: 'Bearer {{tokenDora}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('204 - Admin pode remover livro', () => pm.response.to.have.status(204));

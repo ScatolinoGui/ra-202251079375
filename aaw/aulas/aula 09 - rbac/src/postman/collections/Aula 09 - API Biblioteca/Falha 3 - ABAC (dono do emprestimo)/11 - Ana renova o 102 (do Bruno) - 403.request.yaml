@@ -1,0 +1,13 @@
+$kind: http-request
+name: '11 - Ana renova o 102 (do Bruno) → 403'
+method: POST
+url: '{{baseUrl}}/api/emprestimos/102/renovar'
+order: 2000
+headers:
+  - key: Authorization
+    value: 'Bearer {{tokenAna}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('403 - Leitor nao pode renovar emprestimo de outro usuario', () => pm.response.to.have.status(403));

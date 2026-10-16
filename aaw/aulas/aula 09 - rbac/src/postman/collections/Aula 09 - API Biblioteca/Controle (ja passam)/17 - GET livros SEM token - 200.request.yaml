@@ -1,0 +1,10 @@
+$kind: http-request
+name: '17 - GET /livros SEM token → 200'
+method: GET
+url: '{{baseUrl}}/api/livros'
+order: 1000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('200 - Consulta de acervo e publica', () => pm.response.to.have.status(200));

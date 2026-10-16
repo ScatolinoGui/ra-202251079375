@@ -1,0 +1,12 @@
+$kind: http-request
+method: GET
+url: '{{baseUrl}}/api/quem-sou-eu'
+order: 3000
+headers:
+  - key: Authorization
+    value: 'Bearer {{tokenAna}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('200 - Endpoint quem-sou-eu acessivel com token', () => pm.response.to.have.status(200));

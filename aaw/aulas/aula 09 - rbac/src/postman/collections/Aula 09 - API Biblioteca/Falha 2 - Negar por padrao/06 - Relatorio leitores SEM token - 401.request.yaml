@@ -1,0 +1,10 @@
+$kind: http-request
+name: '06 - Relatório de leitores SEM token → 401'
+method: GET
+url: '{{baseUrl}}/api/relatorios/leitores'
+order: 1000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('401 - Sem token deve retornar 401', () => pm.response.to.have.status(401));

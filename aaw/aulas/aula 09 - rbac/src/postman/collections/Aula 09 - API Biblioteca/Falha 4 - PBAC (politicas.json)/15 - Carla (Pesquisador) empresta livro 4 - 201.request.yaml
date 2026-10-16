@@ -1,0 +1,21 @@
+$kind: http-request
+name: '15 - Carla (Pesquisador) empresta livro 4 → 201'
+method: POST
+url: '{{baseUrl}}/api/emprestimos'
+order: 3000
+headers:
+  - key: Authorization
+    value: 'Bearer {{tokenCarla}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "livroId": 4
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('201 - Pesquisador pode emprestar obra rara', () => pm.response.to.have.status(201));

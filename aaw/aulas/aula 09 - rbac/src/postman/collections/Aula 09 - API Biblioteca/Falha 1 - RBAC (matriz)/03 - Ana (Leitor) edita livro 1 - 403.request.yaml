@@ -1,0 +1,25 @@
+$kind: http-request
+name: '03 - Ana (Leitor) edita livro 1 → 403'
+method: PUT
+url: '{{baseUrl}}/api/livros/1'
+order: 3000
+headers:
+  - key: Authorization
+    value: 'Bearer {{tokenAna}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "titulo": "Livro de Teste",
+      "autor": "Fulano",
+      "ano": 2024,
+      "disponivel": true,
+      "categoria": "Comum"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('403 - Leitor nao pode editar livro', () => pm.response.to.have.status(403));

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using BibliotecaApi.Models;
 using Microsoft.AspNetCore.Authorization;
 
@@ -27,16 +28,19 @@ public class DonoDoEmprestimoHandler : AuthorizationHandler<DonoDoEmprestimoRequ
         DonoDoEmprestimoRequirement requirement,
         Emprestimo emprestimo)
     {
-        // ┌──────────────────────────────────────────────────────────┐
-        // │ FALHA 3 (não corrija ainda!)                              │
-        // │ Este handler se diz ABAC, mas só olha o PAPEL do usuário. │
-        // │ O atributo do recurso (emprestimo.UsuarioId) nem é lido.  │
-        // └──────────────────────────────────────────────────────────┘
-        if (context.User.IsInRole("Leitor")
-            || context.User.IsInRole("Pesquisador")
-            || context.User.IsInRole("Bibliotecario"))
+        if (context.User.IsInRole("Bibliotecario"))
         {
             context.Succeed(requirement);
+            return Task.CompletedTask;
+        }
+
+        if (context.User.IsInRole("Leitor") || context.User.IsInRole("Pesquisador"))
+        {
+            var usuarioId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (usuarioId == emprestimo.UsuarioId.ToString())
+            {
+                context.Succeed(requirement);
+            }
         }
 
         return Task.CompletedTask;

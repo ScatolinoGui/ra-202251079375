@@ -1,0 +1,20 @@
+$kind: http-request
+method: POST
+url: '{{baseUrl}}/api/auth/login'
+order: 5000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "admin@biblioteca.com",
+      "senha": "admin123"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('200 OK', () => pm.response.to.have.status(200));
+      pm.collectionVariables.set('tokenDora', pm.response.json().token);

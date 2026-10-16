@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--text-family-code, monospace), sans-serif; font-size: 13px; color: var(--content-color-primary); padding: 16px; }
+  h1 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { font-size: 11px; color: var(--content-color-secondary, #888); margin-bottom: 14px; }
+  .summary-bar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .badge { padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+  .badge-pass { background: #1a7a3c; color: #fff; }
+  .badge-fail { background: #c0392b; color: #fff; }
+  .badge-warn { background: #d68910; color: #fff; }
+  .section { margin-bottom: 14px; }
+  .section-title { font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 6px 6px 0 0; letter-spacing: 0.5px; }
+  .section-title.rbac   { background: #1a3a5c; color: #7ec8e3; }
+  .section-title.negar  { background: #3a1a5c; color: #c8a7e3; }
+  .section-title.abac   { background: #1a4a2a; color: #7ae3a0; }
+  .section-title.pbac   { background: #4a3a1a; color: #e3c87a; }
+  .section-title.ctrl   { background: #2a2a2a; color: #aaa; }
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 8px; text-align: left; background: var(--background-color-secondary, #1e1e1e); color: var(--content-color-secondary, #888); }
+  td { padding: 5px 8px; border-bottom: 1px solid var(--border-color-default, #333); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+  .got-pass { background: #1a7a3c22; color: #2ecc71; border: 1px solid #2ecc7155; }
+  .got-fail { background: #c0392b22; color: #e74c3c; border: 1px solid #e74c3c55; }
+  .got-warn { background: #d6891022; color: #f39c12; border: 1px solid #f39c1255; }
+  .exp { color: var(--content-color-secondary, #888); font-size: 11px; }
+  .icon { font-size: 14px; margin-right: 4px; }
+  .note { font-size: 10px; color: var(--content-color-secondary, #888); font-style: italic; margin-left: 4px; }
+  .bug-box { background: #4a2a0022; border: 1px solid #f39c1255; border-radius: 6px; padding: 8px 12px; margin-top: 12px; font-size: 11px; color: #f39c12; }
+  .bug-box strong { color: #e67e22; }
+</style>
+</head>
+<body>
+
+<h1>🔍 Resultado da Execução — Aula 09 API Biblioteca</h1>
+<p class="subtitle">http://localhost:5291 · 21 requests executados · antes das correções</p>
+
+<div class="summary-bar">
+  <span class="badge badge-pass">✅ 14 PASSARAM</span>
+  <span class="badge badge-fail">❌ 2 FALHARAM</span>
+  <span class="badge badge-warn">⚠️ 5 BUG DateOnly</span>
+</div>
+
+<!-- LOGINS -->
+<div class="section">
+  <div class="section-title ctrl">0 — LOGINS</div>
+  <table>
+    <tr><th>Request</th><th>Esperado</th><th>Obtido</th><th>Status</th></tr>
+    <tr><td>Login Ana (Leitor)</td><td class="exp">200</td><td><span class="pill got-pass">200</span></td><td>✅</td></tr>
+    <tr><td>Login Bruno (Leitor)</td><td class="exp">200</td><td><span class="pill got-pass">200</span></td><td>✅</td></tr>
+    <tr><td>Login Carla (Pesquisador)</td><td class="exp">200</td><td><span class="pill got-pass">200</span></td><td>✅</td></tr>
+    <tr><td>Login Beto (Bibliotecario)</td><td class="exp">200</td><td><span class="pill got-pass">200</span></td><td>✅</td></tr>
+    <tr><td>Login Dora (Admin)</td><td class="exp">200</td><td><span class="pill got-pass">200</span></td><td>✅</td></tr>
+  </table>
+</div>
+
+<!-- FALHA 1 -->
+<div class="section">
+  <div class="section-title rbac">FALHA 1 — RBAC (matriz de papéis)</div>
+  <table>
+    <tr><th>#</th><th>Request</th><th>Esperado</th><th>Obtido</th><th>Status</th></tr>
+    <tr>
+      <td>01</td>
+      <td>Ana (Leitor) cadastra livro</td>
+      <td class="exp">403</td>
+      <td><span class="pill got-pass">403</span></td>
+      <td>✅ <span class="note">já corrigido</span></td>
+    </tr>
+    <tr>
+      <td>02</td>
+      <td>Beto (Bibliotecario) cadastra livro</td>
+      <td class="exp">201</td>
+      <td><span class="pill got-pass">201</span></td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>03</td>
+      <td>Ana (Leitor) edita livro 1</td>
+      <td class="exp">403</td>
+      <td><span class="pill got-pass">403</span></td>
+      <td>✅ <span class="note">já corrigido</span></td>
+    </tr>
+    <tr>
+      <td>04</td>
+      <td>Beto (Bibliotecario) remove livro 3</td>
+      <td class="exp">403</td>
+      <td><span class="pill got-pass">403</span></td>
+      <td>✅ <span class="note">já corrigido</span></td>
+    </tr>
+    <tr>
+      <td>05</td>
+      <td>Dora (Admin) remove livro 3</td>
+      <td class="exp">204</td>
+      <td><span class="pill got-pass">204</span></td>
+      <td>✅</td>
+    </tr>
+  </table>
+</div>
+
+<!-- FALHA 2 -->
+<div class="section">
+  <div class="section-title negar">FALHA 2 — Negar por padrão (relatórios)</div>
+  <table>
+    <tr><th>#</th><th>Request</th><th>Esperado</th><th>Obtido</th><th>Status</th></tr>
+    <tr>
+      <td>06</td>
+      <td>Relatório leitores SEM token</td>
+      <td class="exp">401</td>
+      <td><span class="pill got-pass">401</span></td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>07</td>
+      <td>Relatório empréstimos SEM token</td>
+      <td class="exp">401</td>
+      <td><span class="pill got-pass">401</span></td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>08</td>
+      <td>Ana (Leitor) acessa relatório leitores</td>
+      <td class="exp">403</td>
+      <td><span class="pill got-fail">200 ⚠️</span></td>
+      <td>❌ <strong>FALHA ATIVA</strong></td>
+    </tr>
+    <tr>
+      <td>09</td>
+      <td>Dora (Admin) acessa relatório leitores</td>
+      <td class="exp">200</td>
+      <td><span class="pill got-pass">200</span></td>
+      <td>✅</td>
+    </tr>
+  </table>
+</div>
+
+<!-- FALHA 3 -->
+<div class="section">
+  <div class="section-title abac">FALHA 3 — ABAC (dono do empréstimo)</div>
+  <table>
+    <tr><th>#</th><th>Request</th><th>Esperado</th><th>Obtido</th><th>Status</th></tr>
+    <tr>
+      <td>10</td>
+      <td>Ana renova empréstimo 101 (dela)</td>
+      <td class="exp">200</td>
+      <td><span class="pill got-warn">500</span></td>
+      <td>⚠️ <span class="note">autorização OK, bug DateOnly</span></td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>Ana renova empréstimo 102 (do Bruno)</td>
+      <td class="exp">403</td>
+      <td><span class="pill got-fail">403</span></td>
+      <td>✅ <span class="note">bloqueio correto</span></td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>Beto (Bibliotecario) renova 102</td>
+      <td class="exp">200</td>
+      <td><span class="pill got-warn">500</span></td>
+      <td>⚠️ <span class="note">autorização OK, bug DateOnly</span></td>
+    </tr>
+  </table>
+</div>
+
+<!-- FALHA 4 -->
+<div class="section">
+  <div class="section-title pbac">FALHA 4 — PBAC (politicas.json)</div>
+  <table>
+    <tr><th>#</th><th>Request</th><th>Esperado</th><th>Obtido</th><th>Status</th></tr>
+    <tr>
+      <td>13</td>
+      <td>Ana empresta livro 1 (comum)</td>
+      <td class="exp">201</td>
+      <td><span class="pill got-warn">500</span></td>
+      <td>⚠️ <span class="note">autorização OK, bug DateOnly</span></td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>Ana empresta livro 4 (obra rara)</td>
+      <td class="exp">403</td>
+      <td><span class="pill got-pass">403</span></td>
+      <td>✅ <span class="note">política correta</span></td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>Carla (Pesquisador) empresta livro 4</td>
+      <td class="exp">201</td>
+      <td><span class="pill got-warn">500</span></td>
+      <td>⚠️ <span class="note">autorização OK, bug DateOnly</span></td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>Dora (Admin) empresta livro 1</td>
+      <td class="exp">403</td>
+      <td><span class="pill got-pass">403</span></td>
+      <td>✅ <span class="note">política correta</span></td>
+    </tr>
+  </table>
+</div>
+
+<!-- CONTROLE -->
+<div class="section">
+  <div class="section-title ctrl">CONTROLE — já devem passar</div>
+  <table>
+    <tr><th>#</th><th>Request</th><th>Esperado</th><th>Obtido</th><th>Status</th></tr>
+    <tr>
+      <td>17</td>
+      <td>GET /livros SEM token</td>
+      <td class="exp">200</td>
+      <td><span class="pill got-pass">200</span></td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>18</td>
+      <td>POST /emprestimos SEM token</td>
+      <td class="exp">401</td>
+      <td><span class="pill got-pass">401</span></td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>—</td>
+      <td>Quem sou eu (Ana)</td>
+      <td class="exp">200</td>
+      <td><span class="pill got-pass">200</span></td>
+      <td>✅</td>
+    </tr>
+  </table>
+</div>
+
+<div class="bug-box">
+  <strong>⚠️ Bug extra detectado (não é falha de autorização):</strong>
+  O endpoint <code>POST /api/emprestimos</code> e <code>POST /api/emprestimos/{id}/renovar</code> retornam <strong>500</strong> quando a autorização passa, porque o modelo <code>Emprestimo</code> usa <code>System.DateOnly</code> que o <code>System.Text.Json</code> padrão não serializa. Isso mascara os cenários 10, 12, 13 e 15. A autorização está funcionando corretamente — o bug é de serialização.
+</div>
+
+</body>
+</html>

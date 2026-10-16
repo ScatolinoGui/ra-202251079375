@@ -1,0 +1,13 @@
+$kind: http-request
+name: '12 - Beto (Bibliotecario) renova o 102 → 200'
+method: POST
+url: '{{baseUrl}}/api/emprestimos/102/renovar'
+order: 3000
+headers:
+  - key: Authorization
+    value: 'Bearer {{tokenBeto}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('200 - Bibliotecario pode renovar qualquer emprestimo', () => pm.response.to.have.status(200));

@@ -1,0 +1,8 @@
+# Use this workspace to collaborate
+workspace:
+  id: 319ad964-1403-4cc5-8f17-91fbf84d0f1d
+
+localResources:
+  collections:
+    - ../BibliotecaApi.postman_collection.json
+    - ../bin/Debug/net6.0/BibliotecaApi.postman_collection.json

@@ -38,7 +38,7 @@ public class LivrosController : ControllerBase
     // │ remover?                                                          │
     // └──────────────────────────────────────────────────────────────────┘
 
-    [Authorize]
+    [Authorize(Policy = "GerenciarAcervo")]
     [HttpPost]
     public ActionResult<Livro> Criar([FromBody] LivroRequest dados)
     {
@@ -49,7 +49,7 @@ public class LivrosController : ControllerBase
         return CreatedAtAction(nameof(BuscarPorId), new { id = livro.Id }, livro);
     }
 
-    [Authorize]
+    [Authorize(Policy = "GerenciarAcervo")]
     [HttpPut("{id}")]
     public IActionResult Atualizar(int id, [FromBody] LivroRequest dados)
     {
@@ -59,7 +59,7 @@ public class LivrosController : ControllerBase
         return _store.AtualizarLivro(id, dados) ? NoContent() : NotFound();
     }
 
-    [Authorize(Roles = "Bibliotecario,Admin")]
+    [Authorize(Policy = "RemoverLivro")]
     [HttpDelete("{id}")]
     public IActionResult Remover(int id) =>
         _store.RemoverLivro(id) ? NoContent() : NotFound();

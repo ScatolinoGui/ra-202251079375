@@ -1,0 +1,6 @@
+name: 'Biblioteca Local'
+values:
+  - key: baseUrl
+    value: 'http://localhost:5291'
+    enabled: true
+    type: default

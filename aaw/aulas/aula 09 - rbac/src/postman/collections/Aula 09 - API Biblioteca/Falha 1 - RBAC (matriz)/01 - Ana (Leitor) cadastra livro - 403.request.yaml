@@ -1,0 +1,25 @@
+$kind: http-request
+name: '01 - Ana (Leitor) cadastra livro → 403'
+method: POST
+url: '{{baseUrl}}/api/livros'
+order: 1000
+headers:
+  - key: Authorization
+    value: 'Bearer {{tokenAna}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "titulo": "Livro de Teste",
+      "autor": "Fulano",
+      "ano": 2024,
+      "disponivel": true,
+      "categoria": "Comum"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('403 - Leitor nao pode cadastrar livro', () => pm.response.to.have.status(403));

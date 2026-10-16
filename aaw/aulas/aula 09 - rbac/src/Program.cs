@@ -43,11 +43,14 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("PodeRenovarEmprestimo",
         p => p.Requirements.Add(new DonoDoEmprestimoRequirement()));
 
-    // ┌──────────────────────────────────────────────────────────────┐
-    // │ FALHA 2 (não corrija ainda!)                                  │
-    // │ Nenhuma regra padrão: endpoint sem [Authorize] fica ABERTO.   │
-    // │ Quem esquecer o atributo publica o endpoint para a internet.  │
-    // └──────────────────────────────────────────────────────────────┘
+    // RBAC: policies nomeadas para centralizar a matriz de acesso.
+    options.AddPolicy("GerenciarAcervo", p => p.RequireRole("Bibliotecario", "Admin"));
+    options.AddPolicy("RemoverLivro", p => p.RequireRole("Admin"));
+
+    // FALHA 2: negar por padrão — endpoint sem atributo fica fechado.
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
 });
 builder.Services.AddSingleton<IAuthorizationHandler, DonoDoEmprestimoHandler>();
 

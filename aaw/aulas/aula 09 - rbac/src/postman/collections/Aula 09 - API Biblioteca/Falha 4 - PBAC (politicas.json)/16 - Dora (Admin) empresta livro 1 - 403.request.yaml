@@ -1,0 +1,21 @@
+$kind: http-request
+name: '16 - Dora (Admin) empresta livro 1 → 403'
+method: POST
+url: '{{baseUrl}}/api/emprestimos'
+order: 4000
+headers:
+  - key: Authorization
+    value: 'Bearer {{tokenDora}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "livroId": 1
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('403 - Admin nao pode emprestar livros (PBAC)', () => pm.response.to.have.status(403));

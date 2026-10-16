@@ -1,0 +1,21 @@
+$kind: http-request
+name: '13 - Ana empresta livro 1 (comum) → 201'
+method: POST
+url: '{{baseUrl}}/api/emprestimos'
+order: 1000
+headers:
+  - key: Authorization
+    value: 'Bearer {{tokenAna}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "livroId": 1
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('201 - Leitor pode emprestar livro comum', () => pm.response.to.have.status(201));

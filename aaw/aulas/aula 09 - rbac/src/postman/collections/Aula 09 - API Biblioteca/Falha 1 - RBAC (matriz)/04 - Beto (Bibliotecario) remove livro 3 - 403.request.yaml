@@ -1,0 +1,13 @@
+$kind: http-request
+name: '04 - Beto (Bibliotecario) remove livro 3 → 403'
+method: DELETE
+url: '{{baseUrl}}/api/livros/3'
+order: 4000
+headers:
+  - key: Authorization
+    value: 'Bearer {{tokenBeto}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('403 - Bibliotecario nao pode remover livro', () => pm.response.to.have.status(403));

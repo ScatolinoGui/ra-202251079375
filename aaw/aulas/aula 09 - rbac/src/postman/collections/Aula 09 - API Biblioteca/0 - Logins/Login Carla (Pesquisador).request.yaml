@@ -1,0 +1,20 @@
+$kind: http-request
+method: POST
+url: '{{baseUrl}}/api/auth/login'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "carla@biblioteca.com",
+      "senha": "carla123"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('200 OK', () => pm.response.to.have.status(200));
+      pm.collectionVariables.set('tokenCarla', pm.response.json().token);

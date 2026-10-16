@@ -1,0 +1,10 @@
+$kind: http-request
+name: '07 - Relatório de empréstimos SEM token → 401'
+method: GET
+url: '{{baseUrl}}/api/relatorios/emprestimos'
+order: 2000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('401 - Sem token deve retornar 401', () => pm.response.to.have.status(401));

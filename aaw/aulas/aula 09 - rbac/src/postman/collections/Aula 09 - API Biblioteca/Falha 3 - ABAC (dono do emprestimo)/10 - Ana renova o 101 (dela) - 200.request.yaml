@@ -1,0 +1,13 @@
+$kind: http-request
+name: '10 - Ana renova o 101 (dela) → 200'
+method: POST
+url: '{{baseUrl}}/api/emprestimos/101/renovar'
+order: 1000
+headers:
+  - key: Authorization
+    value: 'Bearer {{tokenAna}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('200 - Leitor pode renovar o proprio emprestimo', () => pm.response.to.have.status(200));

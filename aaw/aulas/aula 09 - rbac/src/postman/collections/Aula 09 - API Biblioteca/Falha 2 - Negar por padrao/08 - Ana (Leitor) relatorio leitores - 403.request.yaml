@@ -1,0 +1,13 @@
+$kind: http-request
+name: '08 - Ana (Leitor) relatório de leitores → 403'
+method: GET
+url: '{{baseUrl}}/api/relatorios/leitores'
+order: 3000
+headers:
+  - key: Authorization
+    value: 'Bearer {{tokenAna}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('403 - Leitor nao pode acessar relatorios', () => pm.response.to.have.status(403));

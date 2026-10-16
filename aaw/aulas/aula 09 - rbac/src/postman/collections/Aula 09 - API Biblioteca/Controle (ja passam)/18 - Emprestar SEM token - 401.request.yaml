@@ -1,0 +1,19 @@
+$kind: http-request
+name: '18 - Emprestar SEM token → 401'
+method: POST
+url: '{{baseUrl}}/api/emprestimos'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "livroId": 1
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('401 - Sem token nao pode emprestar', () => pm.response.to.have.status(401));

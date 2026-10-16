@@ -1,0 +1,21 @@
+$kind: http-request
+name: '14 - Ana empresta livro 4 (obra rara) → 403'
+method: POST
+url: '{{baseUrl}}/api/emprestimos'
+order: 2000
+headers:
+  - key: Authorization
+    value: 'Bearer {{tokenAna}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "livroId": 4
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('403 - Leitor nao pode emprestar obra rara', () => pm.response.to.have.status(403));
