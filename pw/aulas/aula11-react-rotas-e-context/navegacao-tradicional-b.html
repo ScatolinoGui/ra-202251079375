@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo (página B) — navegação tradicional — Aula 18</title>
+
+<!--
+  ============================================================================
+  MATERIAL DE APOIO — AULA 18 (React IV) · o par de navegacao-tradicional-a.html
+  Programação Web — Newton Paiva
+  ============================================================================
+
+  Segunda página da demonstração. O roteiro completo está no comentário do
+  topo de navegacao-tradicional-a.html — comece por lá.
+
+  O QUE ESTA PÁGINA PROVA
+  Repare que o cabeçalho, a navegação e o CSS são IDÊNTICOS aos da página A —
+  e mesmo assim foram baixados de novo (confira na aba Network). Só o conteúdo
+  do meio é diferente.
+
+  Ao voltar para a página A, o campo de rascunho estará vazio, o contador em
+  zero e o número da sessão será outro. Nada do estado atravessou a navegação:
+  o navegador descartou o documento anterior por completo.
+
+  É exatamente esse descarte que um roteador de SPA evita — ele troca apenas o
+  pedaço do meio e mantém a memória do JavaScript viva.
+
+  O CONTRAPONTO HONESTO
+  Esta navegação funciona sem uma linha de JavaScript, é indexada por
+  buscadores sem esforço, e o botão Voltar do navegador funciona de graça.
+  Para conteúdo (blog, documentação, site institucional), é a escolha certa.
+  ============================================================================
+-->
+
+<style>
+  /* Idêntico ao da página A — de propósito: mesmo assim é baixado outra vez. */
+  :root {
+    --navy: #1f3864;
+    --blue: #2e75b6;
+    --light: #eef3fa;
+    --border: #ccd6e4;
+    --gray: #555;
+    --red: #c0392b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    color: #1e293b;
+    background: #f5f7fa;
+    line-height: 1.55;
+  }
+  header { background: var(--navy); color: #fff; padding: 22px 24px; }
+  header h1 { margin: 0 0 4px; font-size: 1.4rem; }
+  header p { margin: 0; color: #b9cbe6; font-size: 0.92rem; }
+  nav {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+  }
+  nav a { color: var(--blue); font-weight: 600; text-decoration: none; }
+  nav a:hover, nav a:focus-visible { text-decoration: underline; }
+  nav .atual { color: var(--navy); border-bottom: 3px solid var(--navy); padding-bottom: 3px; }
+  main { max-width: 56rem; margin: 0 auto; padding: 24px; }
+  section {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 22px 22px;
+    margin-bottom: 20px;
+  }
+  section h2 { margin: 0 0 12px; color: var(--navy); font-size: 1.05rem; }
+  ul.itens { list-style: none; padding: 0; margin: 0; }
+  ul.itens li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  ul.itens .preco { font-family: Consolas, monospace; color: var(--navy); }
+  .aviso {
+    background: var(--light);
+    border-left: 6px solid var(--blue);
+    padding: 14px 18px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  ol { margin: 8px 0 0; padding-left: 22px; }
+  footer {
+    color: var(--gray);
+    font-size: 0.85rem;
+    padding: 16px 24px 40px;
+    max-width: 56rem;
+    margin: 0 auto;
+  }
+  footer code { font-family: Consolas, monospace; color: var(--red); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Catálogo — página B</h1>
+  <p>Aula 18 · Programação Web · o mesmo cabeçalho, baixado outra vez</p>
+</header>
+
+<nav>
+  <a href="navegacao-tradicional-a.html">← Voltar para a página A</a>
+  <span class="atual">Página B</span>
+</nav>
+
+<main>
+
+  <div class="aviso">
+    <strong>Confira na aba Network o que acabou de ser baixado:</strong>
+    <ol>
+      <li>um <em>documento</em> novo (esta página inteira);</li>
+      <li>o CSS — que é idêntico ao da página A;</li>
+      <li>o cabeçalho e a navegação — que também eram idênticos.</li>
+    </ol>
+    Agora volte para a página A e confira o rascunho, o contador e o número da sessão.
+  </div>
+
+  <section>
+    <h2>Itens (o único conteúdo realmente diferente)</h2>
+    <ul class="itens">
+      <li><span>Mouse óptico</span><span class="preco">R$ 89,90</span></li>
+      <li><span>Teclado mecânico</span><span class="preco">R$ 349,00</span></li>
+      <li><span>Monitor 24 polegadas</span><span class="preco">R$ 899,00</span></li>
+      <li><span>Cabo HDMI 2 m</span><span class="preco">R$ 39,90</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>A pergunta da aula</h2>
+    <p style="margin:0">Quais partes desta página <strong>realmente</strong> precisavam ser baixadas de novo?</p>
+  </section>
+
+</main>
+
+<footer>
+  Sessão desta carga da página: <code id="sessao">—</code><br>
+  Número diferente do da página A: são duas execuções independentes de JavaScript, sem memória em comum.
+</footer>
+
+<script>
+  document.getElementById("sessao").textContent =
+    "#" + Math.random().toString(36).slice(2, 8).toUpperCase();
+
+  console.log(
+    "%cPagina B carregada — o console foi limpo.%c  As mensagens da pagina A nao existem mais.",
+    "color:#2e75b6;font-weight:bold", "color:#555"
+  );
+</script>
+
+</body>
+</html>

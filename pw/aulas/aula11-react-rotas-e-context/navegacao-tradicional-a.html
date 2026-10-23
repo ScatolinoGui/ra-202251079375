@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo (página A) — navegação tradicional — Aula 18</title>
+
+<!--
+  ============================================================================
+  MATERIAL DE APOIO — AULA 18 (React IV) · fase ENGAJAR + Rodada 1
+  Programação Web — Newton Paiva
+  ============================================================================
+
+  PARA QUE SERVE
+  Mostrar o que a navegação tradicional realmente faz — e o que se perde nela —
+  antes de o React Router aparecer. São dois arquivos ligados por um <a href>
+  comum: navegacao-tradicional-a.html e navegacao-tradicional-b.html.
+
+  Não há defeito plantado: é assim que a web funciona por padrão, e para muitos
+  sites isso é a escolha CERTA. O objetivo é a turma perceber o custo e decidir
+  com critério — não achar que <a href> é errado.
+
+  ---------------------------------------------------------------------------
+  ROTEIRO DA DEMONSTRAÇÃO (8 min + 4 de discussão)
+  ---------------------------------------------------------------------------
+  Preparação: abrir pelo Live Server, com a aba Network aberta, filtro em
+  "All" e a opção "Preserve log" DESMARCADA (para o log limpar e o efeito
+  ficar visível).
+
+  Ato 1 (3 min) — Antes de navegar:
+    · digite algo no campo "rascunho";
+    · clique 3 vezes no botão do contador;
+    · repare no número aleatório da sessão, no rodapé.
+    Agora clique em "Ir para a página B".
+
+  Ato 2 (3 min) — Depois de navegar, constatar com a turma:
+    · houve um piscar branco entre as páginas;
+    · a aba Network baixou um DOCUMENTO novo (e o CSS, e o JS);
+    · o console foi limpo: as mensagens da página A desapareceram;
+    · voltando para A, o rascunho, o contador e o número da sessão sumiram.
+    Tudo foi recomeçado do zero. É isso que "recarregar a página" significa.
+
+  Ato 3 (2 min) — Perguntar: "e se essa tela fosse um carrinho de compras
+    com 8 itens, ou um formulário de 20 campos pela metade?"
+
+  Ato 4 (4 min) — Discussão em pares: "quais partes desta página REALMENTE
+    precisavam ser baixadas de novo?" (Nenhuma: só o conteúdo do meio mudou.)
+    Fechar: é exatamente isso que uma SPA evita — o roteador troca o pedaço
+    do meio sem descartar o resto nem a memória do JavaScript.
+
+  ---------------------------------------------------------------------------
+  O QUE NÃO DIZER
+  ---------------------------------------------------------------------------
+  Não conclua que navegação tradicional é ruim. Ela é mais simples, funciona
+  sem JavaScript e é melhor para conteúdo (blog, documentação, institucional).
+  O ganho da SPA aparece quando existe ESTADO que faz sentido preservar entre
+  telas — e o custo aparece no deploy, que é assunto da aula 19.
+  ============================================================================
+-->
+
+<style>
+  :root {
+    --navy: #1f3864;
+    --blue: #2e75b6;
+    --light: #eef3fa;
+    --border: #ccd6e4;
+    --gray: #555;
+    --red: #c0392b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    color: #1e293b;
+    background: #f5f7fa;
+    line-height: 1.55;
+  }
+  header { background: var(--navy); color: #fff; padding: 22px 24px; }
+  header h1 { margin: 0 0 4px; font-size: 1.4rem; }
+  header p { margin: 0; color: #b9cbe6; font-size: 0.92rem; }
+  nav {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+  }
+  nav a { color: var(--blue); font-weight: 600; text-decoration: none; }
+  nav a:hover, nav a:focus-visible { text-decoration: underline; }
+  nav .atual { color: var(--navy); border-bottom: 3px solid var(--navy); padding-bottom: 3px; }
+  main { max-width: 56rem; margin: 0 auto; padding: 24px; }
+  section {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 22px 22px;
+    margin-bottom: 20px;
+  }
+  section h2 { margin: 0 0 12px; color: var(--navy); font-size: 1.05rem; }
+  label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+  input[type="text"] { font: inherit; width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: 4px; }
+  button {
+    font: inherit;
+    font-weight: 600;
+    padding: 9px 16px;
+    border: none;
+    border-radius: 4px;
+    background: var(--navy);
+    color: #fff;
+    cursor: pointer;
+  }
+  .contador { font-family: Consolas, monospace; font-size: 1.6rem; font-weight: 700; color: var(--navy); }
+  .aviso {
+    background: var(--light);
+    border-left: 6px solid var(--blue);
+    padding: 14px 18px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  ol { margin: 8px 0 0; padding-left: 22px; }
+  footer {
+    color: var(--gray);
+    font-size: 0.85rem;
+    padding: 16px 24px 40px;
+    max-width: 56rem;
+    margin: 0 auto;
+  }
+  footer code { font-family: Consolas, monospace; color: var(--red); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Catálogo — página A</h1>
+  <p>Aula 18 · Programação Web · navegação tradicional, com <code>&lt;a href&gt;</code></p>
+</header>
+
+<nav>
+  <span class="atual">Página A</span>
+  <a href="navegacao-tradicional-b.html">Ir para a página B →</a>
+</nav>
+
+<main>
+
+  <div class="aviso">
+    <strong>Antes de clicar no link, faça as três coisas abaixo.</strong> Depois volte e veja o que sobrou.
+    <ol>
+      <li>Digite qualquer coisa no campo de rascunho.</li>
+      <li>Clique três vezes no contador.</li>
+      <li>Anote o número da sessão, no rodapé.</li>
+    </ol>
+  </div>
+
+  <section>
+    <h2>Rascunho (estado do formulário)</h2>
+    <label for="rascunho">Escreva algo aqui</label>
+    <input type="text" id="rascunho" placeholder="este texto sobrevive à navegação?" autocomplete="off">
+  </section>
+
+  <section>
+    <h2>Contador (estado do JavaScript)</h2>
+    <p class="contador" id="valor">0</p>
+    <button id="btn" type="button">+1</button>
+  </section>
+
+</main>
+
+<footer>
+  Sessão desta carga da página: <code id="sessao">—</code><br>
+  Se este número mudar, a página foi recarregada do zero — e toda a memória do JavaScript se foi.
+</footer>
+
+<script>
+  // Número aleatório por CARGA da página. É o instrumento de medida da
+  // demonstração: se ele muda, houve recarregamento completo.
+  document.getElementById("sessao").textContent =
+    "#" + Math.random().toString(36).slice(2, 8).toUpperCase();
+
+  let valor = 0;
+  document.getElementById("btn").addEventListener("click", function () {
+    valor += 1;
+    document.getElementById("valor").textContent = valor;
+  });
+
+  console.log(
+    "%cPagina A carregada.%c  Deixe a aba Network aberta e clique no link do topo.",
+    "color:#2e75b6;font-weight:bold", "color:#555"
+  );
+</script>
+
+</body>
+</html>

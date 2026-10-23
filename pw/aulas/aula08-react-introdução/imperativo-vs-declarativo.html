@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imperativo × declarativo — Aula 15</title>
+
+<!--
+  ============================================================================
+  MATERIAL DE APOIO — AULA 15 (React I) · fase ENGAJAR
+  Programação Web — Newton Paiva
+  ============================================================================
+
+  ⚠️ O LADO ESQUERDO TEM DOIS DEFEITOS PLANTADOS. NÃO CORRIJA.
+  Eles são o motivo pelo qual o React existe, e a demonstração depende deles.
+
+  PARA QUE SERVE
+  Mostrar, sem depender de internet nem de CDN, o problema que o modelo
+  declarativo resolve. O lado esquerdo RODA de verdade: é código imperativo
+  no estilo da aula 12, com as atualizações de tela espalhadas. O lado
+  direito é o MESMO comportamento escrito em React, mostrado como código
+  (não executado) — a versão que roda vem no projeto Vite da fase Elaborar.
+
+  ---------------------------------------------------------------------------
+  OS DOIS DEFEITOS DO LADO IMPERATIVO
+  ---------------------------------------------------------------------------
+  DEFEITO 1 — o contador dessincroniza
+    A função adicionar() atualiza a lista E o contador.
+    A função remover()  atualiza a lista e ESQUECE o contador.
+    Ninguém escreveu isso de má-fé: são dois lugares que precisavam ser
+    mantidos em sincronia à mão, e um deles ficou para trás.
+
+  DEFEITO 2 — a mensagem de lista vazia não volta
+    Ela é escondida quando o primeiro item entra, e nunca mais reaparece:
+    remover todos os itens deixa uma área em branco.
+
+  ---------------------------------------------------------------------------
+  ROTEIRO DA DEMONSTRAÇÃO (10 min + 4 de discussão)
+  ---------------------------------------------------------------------------
+  Ato 1 (3 min) — Clicar em "Adicionar" três vezes. Tudo certo: a lista
+    cresce e o contador acompanha. "Este código funciona."
+  Ato 2 (4 min) — Clicar em "Remover" duas vezes. A lista diminui e o
+    CONTADOR NÃO MUDA. A tela agora mente. Perguntar: "onde está o erro?"
+    Resposta: em nenhum lugar específico — está na arquitetura, que exige
+    atualizar a tela em dois lugares diferentes e confia na memória de quem
+    escreve.
+  Ato 3 (3 min) — Remover todos os itens. A mensagem "nenhum item" não
+    volta: área em branco. Contar em voz alta quantos lugares do código
+    escrevem na tela (são quatro).
+  Ato 4 (4 min) — Projetar o lado direito. Perguntar: "quantos lugares do
+    código React escrevem na tela?" (Um: o return.) Discussão em pares:
+    "esse bug do contador é possível na versão da direita?"
+
+  O ARGUMENTO QUE FECHA
+  No modelo imperativo você descreve COMO mudar a tela, passo a passo, em
+  cada evento. No declarativo você descreve COMO A TELA É, em função dos
+  dados — e a sincronia deixa de ser responsabilidade sua.
+  É a mesma ideia do render() único da aula 12, agora garantida pela
+  ferramenta em vez de pela disciplina de quem programa.
+  ============================================================================
+-->
+
+<style>
+  :root {
+    --navy: #1f3864;
+    --blue: #2e75b6;
+    --light: #eef3fa;
+    --border: #ccd6e4;
+    --gray: #555;
+    --red: #c0392b;
+    --green: #27ae60;
+    --code-bg: #16233d;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    color: #1e293b;
+    background: #f5f7fa;
+    line-height: 1.55;
+  }
+  header { background: var(--navy); color: #fff; padding: 26px 24px; }
+  header h1 { margin: 0 0 6px; font-size: 1.55rem; }
+  header p { margin: 0; color: #b9cbe6; }
+  main { max-width: 74rem; margin: 0 auto; padding: 24px; }
+
+  .colunas { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); }
+  .painel {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-top-width: 6px;
+    border-radius: 6px;
+    padding: 18px 20px 22px;
+  }
+  .painel.imperativo { border-top-color: var(--red); }
+  .painel.declarativo { border-top-color: var(--green); }
+  .painel h2 { margin: 0 0 2px; color: var(--navy); font-size: 1.1rem; }
+  .painel p.sub { margin: 0 0 16px; color: var(--gray); font-size: 0.88rem; font-style: italic; }
+
+  .barra { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  button {
+    font: inherit;
+    font-size: 0.92rem;
+    padding: 8px 14px;
+    border: 1px solid var(--navy);
+    background: var(--navy);
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button.claro { background: #fff; color: var(--navy); }
+
+  .contador {
+    font-family: Consolas, monospace;
+    font-weight: 700;
+    background: var(--light);
+    border: 1px solid var(--blue);
+    color: var(--navy);
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  #lista { list-style: none; padding: 0; margin: 0; min-height: 7rem; }
+  #lista li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 6px;
+    background: #fafcff;
+  }
+  #lista .preco { font-family: Consolas, monospace; color: var(--navy); }
+  #vazio { color: var(--gray); font-style: italic; padding: 10px 0; }
+
+  pre {
+    margin: 0;
+    background: var(--code-bg);
+    color: #e2e8f0;
+    padding: 14px 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+  .marca-erro { color: #f2a0a0; }
+  .marca-ok { color: #9bd4a8; }
+  .marca-dim { color: #8093b0; }
+
+  .aviso {
+    background: var(--light);
+    border-left: 6px solid var(--blue);
+    padding: 14px 18px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+  }
+  .placar {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  .placar b { color: var(--navy); font-size: 1.5rem; font-family: Consolas, monospace; }
+  footer { color: var(--gray); font-size: 0.85rem; padding: 10px 24px 40px; max-width: 74rem; margin: 0 auto; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>O mesmo comportamento, duas arquiteturas</h1>
+  <p>Aula 15 · Programação Web · o lado esquerdo roda de verdade — e mente depois de alguns cliques</p>
+</header>
+
+<main>
+
+  <div class="aviso">
+    <p style="margin:0 0 8px"><strong>Faça na ordem:</strong> clique em <em>Adicionar</em> três vezes
+    (tudo certo), depois em <em>Remover</em> duas vezes e <strong>olhe o contador</strong>.
+    Em seguida remova todos os itens.</p>
+    <p style="margin:0">Depois conte, no código de cada lado, <strong>quantos lugares escrevem na tela</strong>.</p>
+  </div>
+
+  <div class="colunas">
+
+    <!-- ============ LADO IMPERATIVO — roda, e tem os dois defeitos ============ -->
+    <div class="painel imperativo">
+      <h2>1 · Imperativo (o que fizemos na aula 12)</h2>
+      <p class="sub">Cada evento diz COMO mudar a tela, passo a passo.</p>
+
+      <div class="barra">
+        <button id="btn-add" type="button">Adicionar</button>
+        <button id="btn-rem" class="claro" type="button">Remover</button>
+        <button id="btn-zero" class="claro" type="button">Remover todos</button>
+      </div>
+
+      <div class="contador" id="contador">3 itens na lista</div>
+      <p id="vazio" hidden>Nenhum item na lista.</p>
+      <ul id="lista"></ul>
+
+      <div class="placar">
+        <span>lugares que escrevem na tela<br><b>4</b></span>
+        <span>defeitos de sincronia<br><b>2</b></span>
+      </div>
+    </div>
+
+    <!-- ============ LADO DECLARATIVO — código, não executado ============ -->
+    <div class="painel declarativo">
+      <h2>2 · Declarativo (React, a partir de hoje)</h2>
+      <p class="sub">Um único lugar descreve COMO A TELA É, em função dos dados.</p>
+
+<pre><span class="marca-dim">// Lista.jsx — o componente inteiro</span>
+function Lista({ itens }) {
+  <span class="marca-dim">// nao existe "adicionar na tela" nem</span>
+  <span class="marca-dim">// "atualizar o contador": a tela e</span>
+  <span class="marca-dim">// uma FUNCAO dos itens recebidos.</span>
+
+  <span class="marca-ok">return</span> (
+    &lt;section&gt;
+      &lt;p className="contador"&gt;
+        {itens.length} itens na lista
+      &lt;/p&gt;
+
+      {itens.length === 0 ? (
+        &lt;p&gt;Nenhum item na lista.&lt;/p&gt;
+      ) : (
+        &lt;ul&gt;
+          {itens.map((item) =&gt; (
+            &lt;li key={item.id}&gt;
+              &lt;span&gt;{item.nome}&lt;/span&gt;
+              &lt;span&gt;R$ {item.preco}&lt;/span&gt;
+            &lt;/li&gt;
+          ))}
+        &lt;/ul&gt;
+      )}
+    &lt;/section&gt;
+  );
+}</pre>
+
+      <div class="placar">
+        <span>lugares que escrevem na tela<br><b>1</b></span>
+        <span>defeitos de sincronia possíveis<br><b>0</b></span>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  Material de apoio da Aula 15 — Programação Web · Centro Universitário Newton Paiva.
+  Os defeitos do lado esquerdo são propositais: eles são o argumento da aula.
+</footer>
+
+<script>
+  // ==========================================================================
+  // LADO IMPERATIVO — ANTI-EXEMPLO PROPOSITAL
+  //
+  // O array é a fonte da verdade... em teoria. Na prática, a tela é atualizada
+  // em QUATRO lugares diferentes, e manter os quatro em sincronia é
+  // responsabilidade de quem escreve. Aqui, dois deles ficaram incompletos.
+  // ==========================================================================
+  const ITENS = [
+    { id: 1, nome: "Mouse óptico", preco: "89,90" },
+    { id: 2, nome: "Teclado mecânico", preco: "349,00" },
+    { id: 3, nome: "Monitor 24 polegadas", preco: "899,00" },
+  ];
+
+  let proximoId = 4;
+  const NOMES = ["Cabo HDMI", "SSD 480 GB", "Webcam Full HD", "Hub USB", "Mousepad"];
+
+  const lista = document.getElementById("lista");
+  const contador = document.getElementById("contador");
+  const vazio = document.getElementById("vazio");
+
+  // ---- lugar 1 que escreve na tela ----
+  function desenharItem(item) {
+    const li = document.createElement("li");
+    li.dataset.id = item.id;
+    li.innerHTML = "<span></span><span class='preco'></span>";
+    li.children[0].textContent = item.nome;
+    li.children[1].textContent = "R$ " + item.preco;
+    lista.append(li);
+  }
+
+  ITENS.forEach(desenharItem);
+
+  document.getElementById("btn-add").addEventListener("click", function () {
+    const item = {
+      id: proximoId++,
+      nome: NOMES[(proximoId - 4) % NOMES.length],
+      preco: (Math.round(Math.random() * 40000) / 100).toFixed(2).replace(".", ","),
+    };
+    ITENS.push(item);
+
+    desenharItem(item);                                     // lugar 2
+    contador.textContent = ITENS.length + " itens na lista"; // lugar 3
+    vazio.hidden = true;                                    // lugar 4
+  });
+
+  document.getElementById("btn-rem").addEventListener("click", function () {
+    if (ITENS.length === 0) return;
+    ITENS.pop();
+    if (lista.lastElementChild) lista.lastElementChild.remove();
+
+    // ⚠️ DEFEITO 1: aqui faltou atualizar o contador.
+    // ⚠️ DEFEITO 2: e faltou reexibir a mensagem de lista vazia.
+    // Não corrija: é o ponto da demonstração.
+  });
+
+  document.getElementById("btn-zero").addEventListener("click", function () {
+    ITENS.length = 0;
+    lista.innerHTML = "";
+    // Mesmos dois defeitos, de novo — pelo mesmo motivo.
+  });
+
+  console.log(
+    "%cLado imperativo pronto.%c  Adicione 3, remova 2 e olhe o contador.",
+    "color:#2e75b6;font-weight:bold", "color:#555"
+  );
+</script>
+
+</body>
+</html>
