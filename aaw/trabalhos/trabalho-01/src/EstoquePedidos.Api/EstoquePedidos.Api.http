@@ -1,0 +1,5 @@
+@baseUrl = http://localhost:5000
+
+### Verificar status da API
+GET {{baseUrl}}/api/health
+Accept: application/json
