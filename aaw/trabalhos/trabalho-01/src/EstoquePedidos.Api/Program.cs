@@ -33,6 +33,7 @@ app.MapGet("/api/health", () => Results.Ok(new
 }));
 
 app.MapProdutoEndpoints();
+app.MapPedidoEndpoints();
 
 app.Run();
 
