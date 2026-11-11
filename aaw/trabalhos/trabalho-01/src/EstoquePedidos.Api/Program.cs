@@ -1,4 +1,5 @@
 using EstoquePedidos.Api.Config;
+using EstoquePedidos.Api.Endpoints;
 using EstoquePedidos.Api.Repositories;
 using EstoquePedidos.Api.Services;
 
@@ -19,6 +20,8 @@ builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
+app.UseGlobalExceptionHandler();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -28,6 +31,8 @@ app.MapGet("/api/health", () => Results.Ok(new
     servico = "EstoquePedidos.Api",
     timestamp = DateTime.UtcNow
 }));
+
+app.MapProdutoEndpoints();
 
 app.Run();
 
