@@ -21,27 +21,31 @@ public static class PedidoEndpoints
                 page ?? 1,
                 pageSize ?? 10);
             return Results.Ok(resultado);
-        });
+        })
+        .RequireAuthorization();
 
         group.MapGet("/{id}", async (string id, PedidoService service) =>
         {
             var pedido = await service.ObterPorIdAsync(id);
             return Results.Ok(pedido);
-        });
+        })
+        .RequireAuthorization();
 
         group.MapPost("/", async (CriarPedidoRequest request, PedidoService service) =>
         {
             var criado = await service.CriarAsync(request);
             return Results.Created($"/api/pedidos/{criado.Id}", criado);
-        });
+        })
+        .RequireAuthorization();
 
         group.MapDelete("/{id}", async (string id, PedidoService service) =>
         {
             var cancelado = await service.CancelarAsync(id);
             return Results.Ok(cancelado);
-        });
+        })
+        .RequireAuthorization(p => p.RequireRole("Admin"));
 
-        // Sub-recurso do relacionamento 1-N: pedidos de um produto especifico
+        // Sub-recurso do relacionamento 1-N: pedidos de um produto especifico (rota publica)
         app.MapGet("/api/produtos/{id}/pedidos", async (string id, PedidoService service) =>
         {
             var pedidos = await service.ListarPorProdutoIdAsync(id);

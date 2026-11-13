@@ -35,18 +35,21 @@ public static class ProdutoEndpoints
         {
             var criado = await service.CriarAsync(request);
             return Results.Created($"/api/produtos/{criado.Id}", criado);
-        });
+        })
+        .RequireAuthorization(p => p.RequireRole("Admin"));
 
         group.MapPut("/{id}", async (string id, AtualizarProdutoRequest request, ProdutoService service) =>
         {
             var atualizado = await service.AtualizarAsync(id, request);
             return Results.Ok(atualizado);
-        });
+        })
+        .RequireAuthorization(p => p.RequireRole("Admin"));
 
         group.MapDelete("/{id}", async (string id, ProdutoService service) =>
         {
             await service.RemoverAsync(id);
             return Results.NoContent();
-        });
+        })
+        .RequireAuthorization(p => p.RequireRole("Admin"));
     }
 }
