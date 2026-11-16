@@ -117,6 +117,9 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Controle de Estoque e Pedidos API v1");
 });
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 // Autenticacao identifica quem e o usuario; autorizacao decide o que ele pode fazer
 app.UseAuthentication();
 app.UseAuthorization();

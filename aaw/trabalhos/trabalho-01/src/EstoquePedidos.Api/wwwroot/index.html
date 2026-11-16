@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Estoque e Pedidos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="topo">
+        <div class="container topo-conteudo">
+            <div class="topo-marca">
+                <h1>Controle de Estoque e Pedidos</h1>
+                <p class="topo-subtitulo">Gestao de catalogo, emissao de pedidos e controle de saldo</p>
+            </div>
+
+            <div class="painel-auth" aria-label="Autenticacao de usuario">
+                <form id="form-login" class="auth-form" autocomplete="off">
+                    <div class="auth-campos">
+                        <label for="login-email" class="sr-only">E-mail</label>
+                        <input
+                            type="email"
+                            id="login-email"
+                            name="email"
+                            placeholder="E-mail de acesso"
+                            required>
+
+                        <label for="login-senha" class="sr-only">Senha</label>
+                        <input
+                            type="password"
+                            id="login-senha"
+                            name="senha"
+                            placeholder="Senha"
+                            required>
+
+                        <button type="submit" id="btn-login" class="btn btn-primario">Entrar</button>
+                    </div>
+
+                    <div class="auth-atalhos">
+                        <span class="auth-atalhos-rotulo">Credenciais de teste:</span>
+                        <button type="button" id="btn-fill-admin" class="btn-link">Preencher Admin</button>
+                        <button type="button" id="btn-fill-cliente" class="btn-link">Preencher Cliente</button>
+                        <a href="/swagger" target="_blank" rel="noopener" class="btn-link">Documentacao API</a>
+                    </div>
+                </form>
+
+                <div id="auth-status-logado" class="auth-logado oculto">
+                    <div class="auth-identificacao">
+                        <span class="auth-rotulo">Sessao ativa:</span>
+                        <strong id="auth-usuario-nome">Usuario</strong>
+                        <span id="auth-usuario-email" class="auth-email"></span>
+                        <span id="auth-usuario-role" class="etiqueta-perfil">Usuario</span>
+                    </div>
+                    <div class="auth-acoes-logado">
+                        <a href="/swagger" target="_blank" rel="noopener" class="btn-link">Documentacao API</a>
+                        <button type="button" id="btn-logout" class="btn btn-secundario">Sair</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="barra-navegacao" aria-label="Visoes do sistema">
+            <div class="container abas-lista" role="tablist">
+                <button
+                    type="button"
+                    id="tab-lista"
+                    class="aba-btn ativa"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="visao-lista"
+                    data-target="visao-lista">
+                    Catalogo e Pedidos
+                </button>
+                <button
+                    type="button"
+                    id="tab-detalhe"
+                    class="aba-btn"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="visao-detalhe"
+                    data-target="visao-detalhe">
+                    Detalhe do Produto
+                </button>
+                <button
+                    type="button"
+                    id="tab-formulario"
+                    class="aba-btn"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="visao-formulario"
+                    data-target="visao-formulario">
+                    Cadastros e Emissao
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container conteudo-principal">
+        <div id="alerta-global" class="estado-ui oculto" role="status" aria-live="polite"></div>
+
+        <!-- VISAO 1: CATALOGO DE PRODUTOS E LISTAGEM DE PEDIDOS -->
+        <section id="visao-lista" class="visao ativa" aria-labelledby="tab-lista">
+            <div class="bloco-painel">
+                <div class="cabecalho-bloco">
+                    <div>
+                        <h2>Catalogo de Produtos</h2>
+                        <p class="texto-auxiliar">Consulte disponibilidade, filtre por categoria ou pesquise pelo nome do item.</p>
+                    </div>
+                    <div class="acoes-cabecalho">
+                        <button type="button" id="btn-ir-novo-produto" class="btn btn-primario">Novo Produto</button>
+                        <button type="button" id="btn-ir-novo-pedido" class="btn btn-secundario">Emitir Pedido</button>
+                    </div>
+                </div>
+
+                <form id="form-filtro-produtos" class="barra-filtros">
+                    <div class="campo-filtro">
+                        <label for="filtro-categoria">Categoria</label>
+                        <select id="filtro-categoria" name="categoria">
+                            <option value="">Todas as categorias</option>
+                            <option value="Perifericos">Perifericos</option>
+                            <option value="Monitores">Monitores</option>
+                            <option value="Audio">Audio</option>
+                            <option value="Acessorios">Acessorios</option>
+                            <option value="Cabos">Cabos</option>
+                        </select>
+                    </div>
+
+                    <div class="campo-filtro campo-busca">
+                        <label for="filtro-busca">Busca por nome</label>
+                        <input
+                            type="search"
+                            id="filtro-busca"
+                            name="busca"
+                            placeholder="Ex: Teclado, Monitor, Cabo">
+                    </div>
+
+                    <div class="campo-filtro campo-curto">
+                        <label for="filtro-pagesize">Itens por pagina</label>
+                        <select id="filtro-pagesize" name="pageSize">
+                            <option value="6" selected>6 itens</option>
+                            <option value="10">10 itens</option>
+                            <option value="20">20 itens</option>
+                        </select>
+                    </div>
+
+                    <div class="acoes-filtro">
+                        <button type="submit" id="btn-filtrar-produtos" class="btn btn-primario">Filtrar</button>
+                        <button type="button" id="btn-limpar-filtros" class="btn btn-secundario">Limpar</button>
+                    </div>
+                </form>
+
+                <div id="estado-produtos" class="estado-ui estado-loading" role="status" aria-live="polite">
+                    Carregando dados...
+                </div>
+
+                <div id="lista-produtos" class="grade-produtos" aria-live="polite"></div>
+
+                <div id="paginacao-produtos" class="barra-paginacao">
+                    <button type="button" id="btn-pagina-anterior" class="btn btn-secundario" disabled>Anterior</button>
+                    <span id="info-paginacao-produtos" class="info-paginacao">Pagina 1 de 1 (0 registros)</span>
+                    <button type="button" id="btn-proxima-pagina" class="btn btn-secundario" disabled>Proxima</button>
+                </div>
+            </div>
+
+            <div class="bloco-painel">
+                <div class="cabecalho-bloco">
+                    <div>
+                        <h2>Pedidos Registrados</h2>
+                        <p class="texto-auxiliar">Listagem geral de vendas com valores calculados. Requer sessao autenticada.</p>
+                    </div>
+
+                    <div class="barra-filtros-inline">
+                        <label for="filtro-status-pedido">Status</label>
+                        <select id="filtro-status-pedido" name="status">
+                            <option value="">Todos</option>
+                            <option value="Confirmado">Confirmado</option>
+                            <option value="Cancelado">Cancelado</option>
+                        </select>
+                        <button type="button" id="btn-atualizar-pedidos" class="btn btn-secundario">Atualizar lista</button>
+                    </div>
+                </div>
+
+                <div id="estado-pedidos" class="estado-ui estado-empty" role="status" aria-live="polite">
+                    Entre com sua conta no topo da pagina para consultar e emitir pedidos.
+                </div>
+
+                <div id="container-tabela-pedidos" class="tabela-responsiva oculto">
+                    <table id="tabela-pedidos" class="tabela-dados">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Produto</th>
+                                <th>Qtd</th>
+                                <th>Cupom</th>
+                                <th>Subtotal</th>
+                                <th>Desconto</th>
+                                <th>Frete</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Data</th>
+                                <th>Acoes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-pedidos"></tbody>
+                    </table>
+                </div>
+
+                <div id="paginacao-pedidos" class="barra-paginacao oculto">
+                    <button type="button" id="btn-pedidos-anterior" class="btn btn-secundario" disabled>Anterior</button>
+                    <span id="info-paginacao-pedidos" class="info-paginacao">Pagina 1 de 1</span>
+                    <button type="button" id="btn-pedidos-proxima" class="btn btn-secundario" disabled>Proxima</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISAO 2: FICHA DE DETALHE DO PRODUTO E SEUS PEDIDOS VINCULADOS (1-N) -->
+        <section id="visao-detalhe" class="visao oculto" aria-labelledby="tab-detalhe">
+            <div class="bloco-painel">
+                <div class="cabecalho-bloco">
+                    <div>
+                        <h2>Ficha de Detalhe do Produto</h2>
+                        <p class="texto-auxiliar">Visualize os dados cadastrais do item e o historico de pedidos associados.</p>
+                    </div>
+
+                    <div class="barra-filtros-inline">
+                        <label for="select-produto-detalhe">Produto</label>
+                        <select id="select-produto-detalhe">
+                            <option value="">Selecione um produto...</option>
+                        </select>
+                        <button type="button" id="btn-carregar-detalhe" class="btn btn-primario">Carregar ficha</button>
+                        <button type="button" id="btn-voltar-catalogo" class="btn btn-secundario">Voltar ao catalogo</button>
+                    </div>
+                </div>
+
+                <div id="estado-detalhe-produto" class="estado-ui estado-empty" role="status" aria-live="polite">
+                    Selecione um produto no catalogo ou na caixa acima para visualizar sua ficha completa.
+                </div>
+
+                <article id="ficha-produto" class="ficha-detalhe oculto">
+                    <div class="ficha-cabecalho">
+                        <div>
+                            <span id="detalhe-categoria" class="etiqueta-simples">Categoria</span>
+                            <h3 id="detalhe-nome">Nome do Produto</h3>
+                            <p class="detalhe-codigo">Identificador: <code id="detalhe-id">-</code></p>
+                        </div>
+                        <div class="ficha-acoes">
+                            <button type="button" id="btn-pedir-produto-detalhe" class="btn btn-primario">Emitir pedido deste item</button>
+                            <button type="button" id="btn-editar-produto-detalhe" class="btn btn-secundario">Editar produto</button>
+                            <button type="button" id="btn-excluir-produto-detalhe" class="btn btn-perigo">Excluir produto</button>
+                        </div>
+                    </div>
+
+                    <dl class="grade-atributos">
+                        <div class="atributo-item">
+                            <dt>Preco unitario</dt>
+                            <dd id="detalhe-preco">R$ 0,00</dd>
+                        </div>
+                        <div class="atributo-item">
+                            <dt>Saldo em estoque</dt>
+                            <dd id="detalhe-estoque">0 unidades</dd>
+                        </div>
+                        <div class="atributo-item">
+                            <dt>Situacao cadastral</dt>
+                            <dd id="detalhe-ativo">Ativo</dd>
+                        </div>
+                        <div class="atributo-item">
+                            <dt>Data de cadastro</dt>
+                            <dd id="detalhe-criado-em">-</dd>
+                        </div>
+                    </dl>
+                </article>
+            </div>
+
+            <div class="bloco-painel">
+                <div class="cabecalho-bloco">
+                    <div>
+                        <h2>Pedidos Vinculados ao Produto</h2>
+                        <p class="texto-auxiliar">Registros de venda associados diretamente ao identificador deste produto.</p>
+                    </div>
+                </div>
+
+                <div id="estado-pedidos-produto" class="estado-ui estado-empty" role="status" aria-live="polite">
+                    Nenhum produto selecionado.
+                </div>
+
+                <div id="container-pedidos-produto" class="tabela-responsiva oculto">
+                    <table id="tabela-pedidos-produto" class="tabela-dados">
+                        <thead>
+                            <tr>
+                                <th>ID do Pedido</th>
+                                <th>Cliente</th>
+                                <th>Quantidade</th>
+                                <th>Cupom</th>
+                                <th>Subtotal</th>
+                                <th>Desconto</th>
+                                <th>Frete</th>
+                                <th>Valor Total</th>
+                                <th>Status</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-pedidos-produto"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISAO 3: FORMULARIOS DE PRODUTO (ADMIN) E EMISSAO DE PEDIDO -->
+        <section id="visao-formulario" class="visao oculto" aria-labelledby="tab-formulario">
+            <div class="grade-formularios">
+                <!-- FORMULARIO 1: CADASTRAR / EDITAR PRODUTO -->
+                <div class="bloco-painel">
+                    <div class="cabecalho-bloco">
+                        <div>
+                            <h2 id="titulo-form-produto">Cadastrar Produto</h2>
+                            <p class="texto-auxiliar">Operacao restrita ao perfil Admin. Preco deve ser maior que zero.</p>
+                        </div>
+                    </div>
+
+                    <div id="estado-form-produto" class="estado-ui oculto" role="status" aria-live="polite"></div>
+
+                    <form id="form-produto" class="formulario-vertical">
+                        <input type="hidden" id="produto-id-edicao" value="">
+
+                        <div class="campo-form">
+                            <label for="produto-nome">Nome do produto *</label>
+                            <input
+                                type="text"
+                                id="produto-nome"
+                                name="nome"
+                                maxlength="120"
+                                placeholder="Ex: Teclado Mecanico Compacto"
+                                required>
+                        </div>
+
+                        <div class="campo-form">
+                            <label for="produto-categoria">Categoria *</label>
+                            <select id="produto-categoria" name="categoria" required>
+                                <option value="">Selecione uma categoria...</option>
+                                <option value="Perifericos">Perifericos</option>
+                                <option value="Monitores">Monitores</option>
+                                <option value="Audio">Audio</option>
+                                <option value="Acessorios">Acessorios</option>
+                                <option value="Cabos">Cabos</option>
+                            </select>
+                        </div>
+
+                        <div class="linha-campos">
+                            <div class="campo-form">
+                                <label for="produto-preco">Preco unitario (R$) *</label>
+                                <input
+                                    type="number"
+                                    id="produto-preco"
+                                    name="preco"
+                                    step="0.01"
+                                    min="0.01"
+                                    placeholder="0.00"
+                                    required>
+                            </div>
+
+                            <div class="campo-form">
+                                <label for="produto-estoque">Quantidade em estoque *</label>
+                                <input
+                                    type="number"
+                                    id="produto-estoque"
+                                    name="estoque"
+                                    step="1"
+                                    min="0"
+                                    placeholder="0"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="campo-checkbox" id="grupo-produto-ativo">
+                            <input type="checkbox" id="produto-ativo" name="ativo" checked>
+                            <label for="produto-ativo">Produto ativo para recebimento de novos pedidos</label>
+                        </div>
+
+                        <div class="acoes-formulario">
+                            <button type="submit" id="btn-salvar-produto" class="btn btn-primario">Salvar produto</button>
+                            <button type="button" id="btn-cancelar-edicao-produto" class="btn btn-secundario oculto">Cancelar edicao</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- FORMULARIO 2: EMITIR NOVO PEDIDO -->
+                <div class="bloco-painel">
+                    <div class="cabecalho-bloco">
+                        <div>
+                            <h2>Emitir Novo Pedido</h2>
+                            <p class="texto-auxiliar">Disponivel para usuarios autenticados (Usuario ou Admin).</p>
+                        </div>
+                    </div>
+
+                    <div id="estado-form-pedido" class="estado-ui oculto" role="status" aria-live="polite"></div>
+
+                    <form id="form-pedido" class="formulario-vertical">
+                        <div class="campo-form">
+                            <label for="pedido-produto-id">Produto *</label>
+                            <select id="pedido-produto-id" name="produtoId" required>
+                                <option value="">Selecione um produto disponivel...</option>
+                            </select>
+                        </div>
+
+                        <div class="campo-form">
+                            <label for="pedido-nome-cliente">Nome do cliente *</label>
+                            <input
+                                type="text"
+                                id="pedido-nome-cliente"
+                                name="nomeCliente"
+                                maxlength="120"
+                                placeholder="Nome completo do comprador"
+                                required>
+                        </div>
+
+                        <div class="linha-campos">
+                            <div class="campo-form">
+                                <label for="pedido-quantidade">Quantidade *</label>
+                                <input
+                                    type="number"
+                                    id="pedido-quantidade"
+                                    name="quantidade"
+                                    step="1"
+                                    min="1"
+                                    value="1"
+                                    required>
+                            </div>
+
+                            <div class="campo-form">
+                                <label for="pedido-cupom">Cupom promocional (opcional)</label>
+                                <input
+                                    type="text"
+                                    id="pedido-cupom"
+                                    name="cupom"
+                                    maxlength="20"
+                                    placeholder="Ex: DESC10">
+                            </div>
+                        </div>
+
+                        <div id="resumo-regras-pedido" class="caixa-regras">
+                            <h3>Regras comerciais e previa</h3>
+                            <ul class="lista-regras">
+                                <li>Desconto de 10% com o cupom <code>DESC10</code> ou para pedidos a partir de 10 unidades (limite de 10%).</li>
+                                <li>Frete gratis quando o valor com desconto for maior ou igual a R$ 100,00; abaixo desse valor, frete fixo de R$ 15,00.</li>
+                            </ul>
+                            <dl class="previa-valores">
+                                <div>
+                                    <dt>Subtotal estimado:</dt>
+                                    <dd id="previa-subtotal">R$ 0,00</dd>
+                                </div>
+                                <div>
+                                    <dt>Desconto estimado:</dt>
+                                    <dd id="previa-desconto">R$ 0,00</dd>
+                                </div>
+                                <div>
+                                    <dt>Frete estimado:</dt>
+                                    <dd id="previa-frete">R$ 0,00</dd>
+                                </div>
+                                <div class="previa-destaque">
+                                    <dt>Total previsto:</dt>
+                                    <dd id="previa-total">R$ 0,00</dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <div class="acoes-formulario">
+                            <button type="submit" id="btn-salvar-pedido" class="btn btn-primario">Confirmar pedido</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="rodape">
+        <div class="container rodape-conteudo">
+            <span>Sistema de Controle de Estoque e Pedidos</span>
+            <span>API RESTful integrada ao MongoDB</span>
+        </div>
+    </footer>
+
+    <script src="app.js" defer></script>
+</body>
+</html>
