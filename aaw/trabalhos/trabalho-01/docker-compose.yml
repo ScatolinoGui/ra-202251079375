@@ -8,5 +8,19 @@ services:
     volumes:
       - mongo_data:/data/db
 
+  api:
+    build: ./src/EstoquePedidos.Api
+    container_name: estoque_pedidos_api
+    restart: unless-stopped
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - MongoDbSettings__ConnectionString=mongodb://mongo:27017
+      - MongoDbSettings__DatabaseName=EstoquePedidosDb
+    depends_on:
+      - mongo
+
 volumes:
   mongo_data:
